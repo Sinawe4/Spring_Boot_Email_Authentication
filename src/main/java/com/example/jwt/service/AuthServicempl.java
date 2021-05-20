@@ -36,7 +36,7 @@ public class AuthServicempl implements AuthService{
         String salt = member.getSalt().getSait();
         password = saltUtil.encodePassword(salt,password);
         if(!member.getPassword().equals(password))
-            throw new NotFoundException();
+            throw new UserNotFoundException();
         return member;
     }
 }
