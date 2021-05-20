@@ -6,6 +6,7 @@ import com.example.jwt.config.SaltUtil;
 import com.example.jwt.domain.Member;
 import com.example.jwt.repository.MemberRepository;
 import com.example.jwt.repository.SaltRepository;
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,10 @@ public class AuthServicempl implements AuthService{
     public Member loginUser(String id, String password){
         Member member = memberRepository.findByUsername(id);
         if (member == null) throw new UserNotFoundException();
-        String salt = member.getSalt()().genSalt();
+        String salt = member.getSalt().getSait();
+        password = saltUtil.encodePassword(salt,password);
+        if(!member.getPassword().equals(password))
+            throw new NotFoundException();
+        return member;
     }
 }
