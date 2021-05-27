@@ -41,19 +41,18 @@ public class MemberController {
         return response;
     }
 
-    @PostMapping("/login")
-    public Response login (@RequestBody MemberSigninDto memberSigninDto,
-                           HttpServletRequest request,
-                           HttpServletResponse response){
-        try {
-            final Member member = authService.loginUser(memberSigninDto.getUsername(), memberSigninDto.getPassword());
-            final String token = jwtUtil.generateToken(member);
-            final String refreshJwt = jwtUtil.generateRefreshToken(member);
-            Cookie accessToken = cookieUtil.createCookie(JwtUtil.ACCESS_TOKEN_NAME, token);
-            Cookie refreshToken = cookieUtil.createCookie(JwtUtil.REFRESH_TOKEN_NAME, refreshJwt);
-        } catch (Exception e) {
-            throw  new UserLoginFailedException();
-        }
-        return response;
-    }
+//    @PostMapping("/login")
+//    public Response login (@RequestBody MemberSigninDto memberSigninDto,
+//                           HttpServletRequest request,
+//                           HttpServletResponse response){
+//        try {
+//            final Member member = authService.loginUser(memberSigninDto.getUsername(), memberSigninDto.getPassword());
+//            final String token = jwtUtil.generateToken(member);
+//            final String refreshJwt = jwtUtil.generateRefreshToken(member);
+//            Cookie accessToken = cookieUtil.createCookie(JwtUtil.ACCESS_TOKEN_NAME, token);
+//            Cookie refreshToken = cookieUtil.createCookie(JwtUtil.REFRESH_TOKEN_NAME, refreshJwt);
+//        } catch (Exception e) {
+//            throw  new UserLoginFailedException();
+//        }
+//    }
 }
