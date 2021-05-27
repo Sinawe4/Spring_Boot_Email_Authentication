@@ -40,7 +40,7 @@ public class JwtUtill {
     }
 
     public String getUsername(String token){
-        return extractAllClaims(token).get("username", String.class)
+        return extractAllClaims(token).get("username", String.class);
     }
 
 //    public String getUserTokenType(String token){
