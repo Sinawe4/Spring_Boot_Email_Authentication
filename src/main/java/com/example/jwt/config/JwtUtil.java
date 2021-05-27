@@ -15,7 +15,7 @@ import java.security.Key;
 import java.util.Date;
 
 @Component
-public class JwtUtill {
+public class JwtUtil {
 
     public final static long TOKEN_VALIDATION_SECOND = 1000L * 10;
     public final static long REFRESH_TOKEN_VALIDATION_SECOND = 1000L * 60 * 24 * 2;
