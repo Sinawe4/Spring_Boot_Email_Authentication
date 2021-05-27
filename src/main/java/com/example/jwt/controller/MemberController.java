@@ -51,11 +51,9 @@ public class MemberController {
             final String refreshJwt = jwtUtil.generateRefreshToken(member);
             Cookie accessToken = cookieUtil.createCookie(JwtUtil.ACCESS_TOKEN_NAME, token);
             Cookie refreshToken = cookieUtil.createCookie(JwtUtil.REFRESH_TOKEN_NAME, refreshJwt);
-            red
         } catch (Exception e) {
-            throw new UserLoginFailedException();
+            throw  new UserLoginFailedException();
         }
+        return response;
     }
-
-
 }
