@@ -33,6 +33,7 @@ dependencies {
             //'org.bouncycastle:bcprov-jdk15on:1.60',
             'io.jsonwebtoken:jjwt-jackson:0.11.2' // or 'io.jsonwebtoken:jjwt-gson:0.11.2' for gson
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis'
 
 }
 

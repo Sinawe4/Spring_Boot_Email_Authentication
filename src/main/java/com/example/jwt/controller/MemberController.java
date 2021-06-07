@@ -3,6 +3,7 @@ package com.example.jwt.controller;
 import com.example.jwt.advice.exception.UserLoginFailedException;
 import com.example.jwt.config.CookieUtil;
 import com.example.jwt.config.JwtUtil;
+import com.example.jwt.config.RedisUtil;
 import com.example.jwt.domain.Member;
 import com.example.jwt.domain.Response;
 import com.example.jwt.dto.MemberSigninDto;
@@ -25,6 +26,7 @@ public class MemberController {
     private final AuthService authService;
     private final JwtUtil jwtUtil;
     private final CookieUtil cookieUtil;
+    private final RedisUtil redisUtil;
 
     @PostMapping("/signup")
     public Response signUpUser(@RequestBody Member member){
@@ -41,18 +43,22 @@ public class MemberController {
         return response;
     }
 
-//    @PostMapping("/login")
-//    public Response login (@RequestBody MemberSigninDto memberSigninDto,
-//                           HttpServletRequest request,
-//                           HttpServletResponse response){
-//        try {
-//            final Member member = authService.loginUser(memberSigninDto.getUsername(), memberSigninDto.getPassword());
-//            final String token = jwtUtil.generateToken(member);
-//            final String refreshJwt = jwtUtil.generateRefreshToken(member);
-//            Cookie accessToken = cookieUtil.createCookie(JwtUtil.ACCESS_TOKEN_NAME, token);
-//            Cookie refreshToken = cookieUtil.createCookie(JwtUtil.REFRESH_TOKEN_NAME, refreshJwt);
-//        } catch (Exception e) {
-//            throw  new UserLoginFailedException();
-//        }
-//    }
+    @PostMapping("/login")
+    public Response login (@RequestBody MemberSigninDto memberSigninDto,
+                           HttpServletRequest request,
+                           HttpServletResponse response){
+        try {
+            final Member member = authService.loginUser(memberSigninDto.getUsername(), memberSigninDto.getPassword());
+            final String token = jwtUtil.generateToken(member);
+            final String refreshJwt = jwtUtil.generateRefreshToken(member);
+            Cookie accessToken = cookieUtil.createCookie(JwtUtil.ACCESS_TOKEN_NAME, token);
+            Cookie refreshToken = cookieUtil.createCookie(JwtUtil.REFRESH_TOKEN_NAME, refreshJwt);
+            redisUtil.setDataExpire(refreshJwt, member.getUsername(), JwtUtil.REFRESH_TOKEN_VALIDATION_SECOND);
+            response.addCookie(accessToken);
+            response.addCookie(refreshToken);
+            return new Response("Success", "로그인에 성공했습니다.", token);
+        } catch (Exception e) {
+            throw new UserLoginFailedException();
+        }
+    }
 }

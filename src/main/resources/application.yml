@@ -8,6 +8,10 @@ spring:
     hibernate:
       ddl-auto: create
     database-platform: org.hibernate.dialect.MySQL8Dialect
-
+  cache:
+    type: redis
+  redis:
+    host: localhost
+    port: 6379
 jwt:
   secret: 1B5B7FC120740721FEB3A3A17228DFD3ED488A8C03EF9FD3071FC6853C5FE022
