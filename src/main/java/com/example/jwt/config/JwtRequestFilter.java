@@ -38,56 +38,56 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        final Cookie jwtToken = cookieUtil.getCookie(httpServletRequest,JwtUtil.ACCESS_TOKEN_NAME);
+        final Cookie jwtToken = cookieUtil.getCookie(httpServletRequest,JwtUtil.ACCESS_TOKEN_NAME); //쿠키를 가져와 jwtToken에 넣음
 
         String username = null;
         String jwt = null;
         String refreshJwt = null;
-        String refreshUname = null;
+        String refreshusername = null;
 
         try{
-            if(jwtToken != null){
+            if(jwtToken != null){ //가져온 쿠키가 cookieUtil.getCookie를 통해 올바른 값이 왔는지 확인
                 jwt = jwtToken.getValue();
-                username = jwtUtil.getUsername(jwt);
+                username = jwtUtil.getUsername(jwt); //해당 토큰의 안에 있는 유저이름을 가져온다.
             }
-            if(username != null){
+            if(username != null){ //유저 이름을 성공적으로 가져왔을 경우
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-                if (jwtUtil.validateToken(jwt, userDetails)){
-                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
-                    usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
-                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                if (jwtUtil.validateToken(jwt, userDetails)){ //토큰의 만료확인과 토큰속의 Username 과 UserDetails 속의 Username이 일치하는지 확인.
+                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities()); //인증을 위한 값을 담음
+                    usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest)); //인증
+                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken); // 인증 정보가 일치함으로 context 에 인증정보를 저장하고 통과, filter 외부의 컨트롤러에서도 인증정보를 참조하기에 저장해두어야 한다.
                 }
             }
-        }catch (ExpiredJwtException e){
-            Cookie refreshToken = cookieUtil.getCookie(httpServletRequest,JwtUtil.REFRESH_TOKEN_NAME);
-            if(refreshToken!=null){
-                refreshJwt = refreshToken.getValue();
+        }catch (ExpiredJwtException e){ //토큰이 만료되었을때
+            Cookie refreshToken = cookieUtil.getCookie(httpServletRequest,JwtUtil.REFRESH_TOKEN_NAME); //리프레쉬 토큰이 있나 검사
+            if(refreshToken!=null){ //리프레쉬 토큰이 있을때
+                refreshJwt = refreshToken.getValue(); //토큰에 리프레쉬토큰의 값을 넣음.
             }
         }catch (Exception e){
 
         }
         try{
-            if(refreshJwt != null){
-                refreshUname = redisUtil.getData(refreshJwt);
+            if(refreshJwt != null){  //리프레쉬 토큰에 값이 있을때
+                refreshusername = redisUtil.getData(refreshJwt); //redis를 사용하여 값을 직렬화하여 가져옴
 
-                if(refreshUname.equals(jwtUtil.getUsername(refreshJwt))){
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(refreshUname);
-                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
-                    usernamePasswordAuthenticationToken.setDetails((new WebAuthenticationDetailsSource().buildDetails(httpServletRequest)));
-                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(refreshusername);
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities()); //인증을 위한 값을 담음
+                usernamePasswordAuthenticationToken.setDetails((new WebAuthenticationDetailsSource().buildDetails(httpServletRequest))); //인증
+                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken); // 인증 정보가 일치함으로 context 에 인증정보를 저장하고 통과, filter 외부의 컨트롤러에서도 인증정보를 참조하기에 저장해두어야 한다.
 
-                    Member member = new Member();
-                    member.setUsername(refreshUname);
-                    String newToken = jwtUtil.generateToken(member);
+                Member member = new Member();
+                member.setUsername(refreshusername);
+                String newToken = jwtUtil.generateToken(member); //Refresh 토큰속 정보로 AccessToken 생성
 
-                    Cookie newAccessToken = cookieUtil.createCookie(JwtUtil.ACCESS_TOKEN_NAME,newToken);
-                    httpServletResponse.addCookie(newAccessToken);
-                }
+                Cookie newAccessToken = cookieUtil.createCookie(JwtUtil.ACCESS_TOKEN_NAME,newToken); //토큰을 쿠키에 담는다
+                httpServletResponse.addCookie(newAccessToken);
+
             }
         }catch (ExpiredJwtException e){
 
         }
-        filterChain.doFilter(httpServletRequest,httpServletResponse);
+
+        filterChain.doFilter(httpServletRequest,httpServletResponse); //필터 작동
     }
 }
