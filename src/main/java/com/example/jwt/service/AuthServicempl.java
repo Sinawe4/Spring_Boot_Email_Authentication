@@ -32,7 +32,7 @@ public class AuthServicempl implements AuthService{
     public Member loginUser(String id, String password){
         Member member = memberRepository.findByUsername(id);
         if (member == null) throw new UserNotFoundException();
-        String salt = member.getSalt().getSait();
+        String salt = member.getSalt().getSalt();
         password = saltUtil.encodePassword(salt,password);
         if(!member.getPassword().equals(password))
             throw new UserNotFoundException();

@@ -58,6 +58,7 @@ public class MemberController {
             response.addCookie(refreshToken);
             return new Response("Success", "로그인에 성공했습니다.", token);
         } catch (Exception e) {
+            System.out.println(e);
             throw new UserLoginFailedException();
         }
     }
