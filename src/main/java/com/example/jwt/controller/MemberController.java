@@ -1,12 +1,12 @@
 package com.example.jwt.controller;
 
 import com.example.jwt.advice.exception.UserLoginFailedException;
-import com.example.jwt.config.CookieUtil;
-import com.example.jwt.config.JwtUtil;
-import com.example.jwt.config.RedisUtil;
+import com.example.jwt.dto.MemberSigninDto;
+import com.example.jwt.util.CookieUtil;
+import com.example.jwt.util.JwtUtil;
+import com.example.jwt.util.RedisUtil;
 import com.example.jwt.domain.Member;
 import com.example.jwt.domain.Response;
-import com.example.jwt.dto.MemberSigninDto;
 import com.example.jwt.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

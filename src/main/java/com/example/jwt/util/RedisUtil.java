@@ -1,4 +1,4 @@
-package com.example.jwt.config;
+package com.example.jwt.util;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;

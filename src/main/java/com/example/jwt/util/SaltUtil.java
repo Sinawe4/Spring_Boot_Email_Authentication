@@ -1,4 +1,4 @@
-package com.example.jwt.config;
+package com.example.jwt.util;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;

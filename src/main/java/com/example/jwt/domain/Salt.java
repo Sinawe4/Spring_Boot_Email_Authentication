@@ -1,4 +1,4 @@
-package com.example.jwt.config;
+package com.example.jwt.domain;
 
 import com.sun.istack.NotNull;
 import lombok.Getter;

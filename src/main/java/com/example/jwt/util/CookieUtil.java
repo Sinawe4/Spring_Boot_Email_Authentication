@@ -1,5 +1,6 @@
-package com.example.jwt.config;
+package com.example.jwt.util;
 
+import com.example.jwt.util.JwtUtil;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
@@ -18,7 +19,7 @@ public class CookieUtil {
 
     public Cookie getCookie(HttpServletRequest request, String cookiename){
         final Cookie[] cookies = request.getCookies();
-        if(cookies == null) return null;
+        if(cookies == null) return null;z
         for (Cookie cookie : cookies){
             if (cookie.getName().equals(cookiename))
                 return cookie;

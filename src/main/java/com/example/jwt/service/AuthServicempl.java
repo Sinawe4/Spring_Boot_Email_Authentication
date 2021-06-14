@@ -1,12 +1,11 @@
 package com.example.jwt.service;
 
 import com.example.jwt.advice.exception.UserNotFoundException;
-import com.example.jwt.config.Salt;
-import com.example.jwt.config.SaltUtil;
+import com.example.jwt.domain.Salt;
+import com.example.jwt.util.SaltUtil;
 import com.example.jwt.domain.Member;
 import com.example.jwt.repository.MemberRepository;
 import com.example.jwt.repository.SaltRepository;
-import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
