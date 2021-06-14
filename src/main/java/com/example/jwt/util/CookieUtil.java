@@ -19,7 +19,7 @@ public class CookieUtil {
 
     public Cookie getCookie(HttpServletRequest request, String cookiename){
         final Cookie[] cookies = request.getCookies();
-        if(cookies == null) return null;z
+        if(cookies == null) return null;
         for (Cookie cookie : cookies){
             if (cookie.getName().equals(cookiename))
                 return cookie;
