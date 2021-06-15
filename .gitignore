@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Sensitive Information ###
+/src/main/resources/application.yml
