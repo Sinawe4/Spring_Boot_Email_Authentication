@@ -20,7 +20,7 @@ spring:
     port: 587
     username: sdsfs
     password:
-    properties:
+    properties:i
       mail:
         smtp:
           auth: true
