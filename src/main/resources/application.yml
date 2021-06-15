@@ -15,3 +15,14 @@ spring:
     port: 6379
   jwt:
     secret: G+KbPeShVmYq3t6v9y$B&E)H@McQfTjWnZr4u7x!z%C*F-JaNdRgUkXp2s5v8y/B
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: titable2021
+    password: titable@@
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
