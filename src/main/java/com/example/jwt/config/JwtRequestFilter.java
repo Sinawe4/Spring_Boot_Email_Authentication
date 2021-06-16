@@ -70,22 +70,22 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         try{
             if(refreshJwt != null){  //리프레쉬 토큰에 값이 있을때
                 refreshusername = redisUtil.getData(refreshJwt); //redis를 사용하여 값을 직렬화하여 가져옴
+                if(refreshusername.equals(jwtUtil.getUsername(refreshJwt))){
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(refreshusername);
+                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities()); //인증을 위한 값을 담음
+                    usernamePasswordAuthenticationToken.setDetails((new WebAuthenticationDetailsSource().buildDetails(httpServletRequest))); //인증
+                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken); // 인증 정보가 일치함으로 context 에 인증정보를 저장하고 통과, filter 외부의 컨트롤러에서도 인증정보를 참조하기에 저장해두어야 한다.
 
-                UserDetails userDetails = userDetailsService.loadUserByUsername(refreshusername);
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities()); //인증을 위한 값을 담음
-                usernamePasswordAuthenticationToken.setDetails((new WebAuthenticationDetailsSource().buildDetails(httpServletRequest))); //인증
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken); // 인증 정보가 일치함으로 context 에 인증정보를 저장하고 통과, filter 외부의 컨트롤러에서도 인증정보를 참조하기에 저장해두어야 한다.
+                    Member member = new Member();
+                    member.setUsername(refreshusername);
+                    String newToken = jwtUtil.generateToken(member); //Refresh 토큰속 정보로 AccessToken 생성
 
-                Member member = new Member();
-                member.setUsername(refreshusername);
-                String newToken = jwtUtil.generateToken(member); //Refresh 토큰속 정보로 AccessToken 생성
-
-                Cookie newAccessToken = cookieUtil.createCookie(JwtUtil.ACCESS_TOKEN_NAME,newToken); //토큰을 쿠키에 담는다
-                httpServletResponse.addCookie(newAccessToken);
-
+                    Cookie newAccessToken = cookieUtil.createCookie(JwtUtil.ACCESS_TOKEN_NAME,newToken); //토큰을 쿠키에 담는다
+                    httpServletResponse.addCookie(newAccessToken);
+                }
             }
         }catch (ExpiredJwtException e){
-
+            System.out.println(e);
         }
 
         filterChain.doFilter(httpServletRequest,httpServletResponse); //필터 작동

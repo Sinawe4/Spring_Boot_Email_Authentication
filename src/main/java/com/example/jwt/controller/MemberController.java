@@ -2,17 +2,16 @@ package com.example.jwt.controller;
 
 import com.example.jwt.advice.exception.UserLoginFailedException;
 import com.example.jwt.dto.MemberSigninDto;
+import com.example.jwt.dto.RequestVerifyEmailDto;
 import com.example.jwt.util.CookieUtil;
 import com.example.jwt.util.JwtUtil;
 import com.example.jwt.util.RedisUtil;
 import com.example.jwt.domain.Member;
 import com.example.jwt.domain.Response;
 import com.example.jwt.service.AuthService;
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -61,5 +60,31 @@ public class MemberController {
             System.out.println(e);
             throw new UserLoginFailedException();
         }
+    }
+    @PostMapping("/verify")
+    public Response verify(@RequestBody RequestVerifyEmailDto requestVerifyEmailDto, HttpServletRequest servletRequest,HttpServletResponse servletResponse){
+        Response response;
+        try{
+            Member member = authService.findByUsername(requestVerifyEmailDto.getUsername());
+            authService.sendVerificationMail(member);
+            response = new Response("success", "성공적으로 인증메일을 보냈습니다.", null);
+        } catch (Exception e) {
+            System.out.println(e);
+            response = new Response("error", "인증메일을 확인하는데 실패했습니다.", null);
+        }
+        return response;
+    }
+
+    @GetMapping("/verify/{key}")
+    public Response getVerify(@PathVariable String key){
+        Response response;
+        try {
+            authService.verifyEmail(key);
+            response = new Response("success", "성공적으로 인증메일을 확인했습니다.", null);
+        } catch (Exception e){
+            System.out.println(e);
+            response = new Response("error", "인증메일을 확인하는데 실패했습니다.", null);
+        }
+        return response;
     }
 }
