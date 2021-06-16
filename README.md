@@ -1,2 +1,4 @@
-# Spring_Boot_JWT_Practice
-JWT + Spring Starter Mail 을 사용하여 로그인한 사용자에게 토큰을주고 이메일 인증후 권한을 업데이트한다.
+# Spring_Boot_Email_Authentication
+> **1.본인의 정보를 담아 회원가입**
+> **2.로그인시 토큰 발급!**
+> **3.로그인후 이메일 인증으로 권한 획득**
