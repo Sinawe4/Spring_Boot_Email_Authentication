@@ -2,6 +2,8 @@ package com.example.jwt.controller;
 
 import com.example.jwt.advice.exception.UserLoginFailedException;
 import com.example.jwt.dto.MemberSigninDto;
+import com.example.jwt.dto.RequestChangePasswordDto;
+import com.example.jwt.dto.RequestChangePasswordEmailDto;
 import com.example.jwt.dto.RequestVerifyEmailDto;
 import com.example.jwt.util.CookieUtil;
 import com.example.jwt.util.JwtUtil;
@@ -86,5 +88,47 @@ public class MemberController {
             response = new Response("error", "인증메일을 확인하는데 실패했습니다.", null);
         }
         return response;
+    }
+
+    @GetMapping("/password/{key}")
+    public Response isPasswordUUIdValidate(@PathVariable String key) {
+        Response response;
+        try {
+            authService.isPasswordUuidValidate(key);
+            response = new Response("success", "정상적인 접근입니다.", null);
+        } catch (Exception e) {
+            response = new Response("error", "유효하지 않은 key값입니다.", null);
+        }
+        return response;
+    }
+
+    @PostMapping("/password")
+    public Response requestChangePassword(@RequestBody RequestChangePasswordEmailDto requestChangePasswordEmailDto) {
+        Response response;
+        try {
+            Member member = authService.findByUsername(requestChangePasswordEmailDto.getUsername());
+            if (!member.getEmail().equals(requestChangePasswordEmailDto.getEmail())) throw new NoSuchFieldException("");
+            authService.requestChangePassword(member);
+            response = new Response("success", "성공적으로 사용자의 비밀번호 변경요청을 수행했습니다.", null);
+        } catch (NoSuchFieldException e) {
+            response = new Response("error", "사용자 정보를 조회할 수 없습니다.", null);
+        } catch (Exception e) {
+            response = new Response("error", "비밀번호 변경 요청을 할 수 없습니다.", null);
+        }
+        return response;
+    }
+
+    @PutMapping("/password")
+    public Response changePassword(@RequestBody RequestChangePasswordDto requestChangePasswordDto) {
+        Response response;
+        try{
+            Member member = authService.findByUsername(requestChangePasswordDto.getUsername());
+            authService.changePassword(member,requestChangePasswordDto.getPassword());
+            response = new Response("success","성공적으로 사용자의 비밀번호를 변경했습니다.",null);
+        }catch(Exception e){
+            response = new Response("error","사용자의 비밀번호를 변경할 수 없었습니다.",null);
+        }
+        return response;
+
     }
 }
