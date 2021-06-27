@@ -18,9 +18,10 @@ public interface AuthService {
     void verifyEmail(String key) throws UserNotFoundException;
 
     void modifyUserRole(Member member, UserRole userRole);
+
     Member findByUsername(String username) throws UserNotFoundException;
 
-    void isPasswordUuidValidate(String key)throws UserNotFoundException;
+    void isPasswordKeyValidate(String key)throws UserNotFoundException;
 
     void changePassword(Member member,String password) throws UserNotFoundException;
 

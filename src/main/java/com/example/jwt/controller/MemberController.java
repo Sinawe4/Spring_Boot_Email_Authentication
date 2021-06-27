@@ -11,7 +11,6 @@ import com.example.jwt.util.RedisUtil;
 import com.example.jwt.domain.Member;
 import com.example.jwt.domain.Response;
 import com.example.jwt.service.AuthService;
-import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -77,8 +76,8 @@ public class MemberController {
         return response;
     }
 
-    @GetMapping("/verify/{key}")
-    public Response getVerify(@PathVariable String key){
+    @GetMapping("/verify/key")
+    public Response getVerify(@RequestBody String key){
         Response response;
         try {
             authService.verifyEmail(key);
@@ -86,18 +85,6 @@ public class MemberController {
         } catch (Exception e){
             System.out.println(e);
             response = new Response("error", "인증메일을 확인하는데 실패했습니다.", null);
-        }
-        return response;
-    }
-
-    @GetMapping("/password/{key}")
-    public Response isPasswordUUIdValidate(@PathVariable String key) {
-        Response response;
-        try {
-            authService.isPasswordUuidValidate(key);
-            response = new Response("success", "정상적인 접근입니다.", null);
-        } catch (Exception e) {
-            response = new Response("error", "유효하지 않은 key값입니다.", null);
         }
         return response;
     }
@@ -114,6 +101,18 @@ public class MemberController {
             response = new Response("error", "사용자 정보를 조회할 수 없습니다.", null);
         } catch (Exception e) {
             response = new Response("error", "비밀번호 변경 요청을 할 수 없습니다.", null);
+        }
+        return response;
+    }
+
+    @GetMapping("/password/key")
+    public Response isPasswordKeyValidate(@RequestBody String key) {
+        Response response;
+        try {
+            authService.isPasswordKeyValidate(key);
+            response = new Response("success", "정상적인 접근입니다.", null);
+        } catch (Exception e) {
+            response = new Response("error", "유효하지 않은 key값입니다.", null);
         }
         return response;
     }
