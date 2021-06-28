@@ -16,7 +16,7 @@ public interface AuthService {
 
     Map<String,String> loginUser(String id, String password) throws Exception;
 
-    void sendVerificationMail(Member member) throws NotFoundException;
+    void sendVerificationMail(Member member) throws UserNotFoundException;
 
     void verifyEmail(String key) throws UserNotFoundException;
 

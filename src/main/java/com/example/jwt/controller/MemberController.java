@@ -7,7 +7,6 @@ import com.example.jwt.dto.*;
 import com.example.jwt.util.JwtUtil;
 import com.example.jwt.util.RedisUtil;
 import com.example.jwt.domain.Member;
-import com.example.jwt.domain.Response;
 import com.example.jwt.service.AuthService;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;

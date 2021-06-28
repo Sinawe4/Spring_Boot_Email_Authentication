@@ -1,15 +1,16 @@
 package com.example.jwt.service;
 
+import com.example.jwt.advice.exception.UserAlreadyExistsException;
 import com.example.jwt.advice.exception.UserNotFoundException;
 import com.example.jwt.domain.Salt;
 import com.example.jwt.domain.UserRole;
 import com.example.jwt.dto.MemberDto;
-import com.example.jwt.dto.MemberSigninDto;
 import com.example.jwt.util.*;
 import com.example.jwt.domain.Member;
 import com.example.jwt.repository.MemberRepository;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -17,7 +18,7 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
-public class AuthServicempl implements AuthService{
+public class AuthServiceMpl implements AuthService{
 
     private final MemberRepository memberRepository;
     private final SaltUtil saltUtil;
@@ -29,7 +30,7 @@ public class AuthServicempl implements AuthService{
     @Override
     public void signUpUser(MemberDto memberDto) {
         if (memberRepository.findByUsername(memberDto.getUsername()) != null){
-            throw new U();
+            throw new UserAlreadyExistsException();
         }
         String salt = saltUtil.genSalt();
         System.out.println(salt);
@@ -57,7 +58,7 @@ public class AuthServicempl implements AuthService{
     }
 
     @Override
-    public void sendVerificationMail(Member member) throws NotFoundException {
+    public void sendVerificationMail(Member member) throws UserNotFoundException {
         if(member==null) throw new UserNotFoundException();
         String authkey = keyUtil.getKey(6);
         redisUtil.setDataExpire(authkey,member.getUsername(),60 * 30L);
@@ -90,7 +91,7 @@ public class AuthServicempl implements AuthService{
     @Override
     public void requestChangePassword(Member member) throws UserNotFoundException{
         String authkey = keyUtil.getKey(6);
-        if(member == null) throw new UserNotFoundException("멤버가 조회되지 않음.");
+        if(member == null) throw new UserNotFoundException();
         redisUtil.setDataExpire(authkey,member.getUsername(),60 * 30L);
         emailService.sendMail(member.getEmail(),"[Tita] 사용자 비밀번호 변경 메일입니다.","인증번호는 "+ authkey);
     }
@@ -99,13 +100,13 @@ public class AuthServicempl implements AuthService{
     public void isPasswordKeyValidate(String key){
         String memberId = redisUtil.getData(key);
         Member member = memberRepository.findByUsername(memberId);
-        if (member==null) throw new UserNotFoundException("멤버가 조회되지않음.");
+        if (member==null) throw new UserNotFoundException();
         modifyUserRole(member,UserRole.ROLE_PASSWORD_CHANGE);
     }
 
     @Override
     public void changePassword(Member member,String password) throws UserNotFoundException{
-        if(member == null) throw new UserNotFoundException("changePassword(),멤버가 조회되지 않음");
+        if(member == null) throw new UserNotFoundException();
         String salt = saltUtil.genSalt();
         member.setSalt(new Salt(salt));
         member.setPassword(saltUtil.encodePassword(salt,password));
