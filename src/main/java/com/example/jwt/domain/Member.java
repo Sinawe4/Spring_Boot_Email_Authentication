@@ -1,10 +1,7 @@
 package com.example.jwt.domain;
 
 import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
@@ -89,6 +86,16 @@ public class Member implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Builder
+    public Member (String username, String password, String name, String email, String address, Salt salt){
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.email = email;
+        this.address = address;
+        this.salt = salt;
     }
 }
 
