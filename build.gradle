@@ -32,6 +32,10 @@ dependencies {
             'io.jsonwebtoken:jjwt-jackson:0.11.2'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.5.1'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'io.springfox:springfox-swagger2:2.6.1'
+    implementation 'io.springfox:springfox-swagger-ui:2.6.1'
+    implementation group: 'net.rakugakibox.util', name: 'yaml-resource-bundle', version: '1.1'
 }
 
 test {
